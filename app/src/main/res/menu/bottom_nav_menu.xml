@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_messages"
+        android:icon="@drawable/ic_message"
+        android:title="@string/messages" />
+
+    <item
+        android:id="@+id/nav_status"
+        android:icon="@drawable/ic_status"
+        android:title="@string/status" />
+
+    <item
+        android:id="@+id/nav_new"
+        android:icon="@drawable/ic_add"
+        android:title="" />
+
+    <item
+        android:id="@+id/nav_call"
+        android:icon="@drawable/ic_call"
+        android:title="@string/call" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_profile"
+        android:title="@string/profile" />
+
+</menu>

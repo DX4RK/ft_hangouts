@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ft_hangouts</string>
+    <string name="messages">Messages</string>
+    <string name="status">Status</string>
+    <string name="call">Call</string>
+    <string name="profile">Profile</string>
+</resources>

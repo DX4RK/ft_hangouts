@@ -53,8 +53,11 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="500dp"
-            android:layout_marginTop="11dp"
-            />
+            android:layout_marginTop="11dp">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="70dp"/>
+        </ScrollView>
     </LinearLayout>
 
     <androidx.cardview.widget.CardView

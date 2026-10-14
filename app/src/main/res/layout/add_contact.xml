@@ -54,7 +54,7 @@
         android:hint="@string/address" />
 
     <Button
-        android:id="@+id/addButton"
+        android:id="@+id/addContactButton"
         android:backgroundTint="#2196F3"
         android:textColor="#FFFFFF"
         android:layout_width="match_parent"

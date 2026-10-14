@@ -48,7 +48,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // nothing yet; we'll use this when we add the messages table
     }
 
     private ContentValues toValues(Contact c) {
@@ -71,13 +70,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cursor.getString(cursor.getColumnIndexOrThrow(ADDRESS_FIELD)));
     }
 
-    // CREATE: returns the new id (or -1 on error)
     public long addContact(Contact contact) {
         SQLiteDatabase db = getWritableDatabase();
         return db.insert(TABLE_NAME, null, toValues(contact));
     }
 
-    // READ ALL
     public List<Contact> getAllContacts() {
         List<Contact> list = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -89,7 +86,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    // READ ONE (returns null if not found)
     public Contact getContact(int id) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null, ID_FIELD + " = ?",
@@ -101,14 +97,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return contact;
     }
 
-    // UPDATE
     public int updateContact(Contact contact) {
         SQLiteDatabase db = getWritableDatabase();
         return db.update(TABLE_NAME, toValues(contact), ID_FIELD + " = ?",
                 new String[]{String.valueOf(contact.getId())});
     }
 
-    // DELETE
     public int deleteContact(int id) {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete(TABLE_NAME, ID_FIELD + " = ?",

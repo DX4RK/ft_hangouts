@@ -18,11 +18,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);   // loads the XML
         android.widget.Toast.makeText(this, "NEW BUILD 123", android.widget.Toast.LENGTH_LONG).show();
 
-        DatabaseHelper db = DatabaseHelper.getInstance(this);
-        db.addContact(new Contact("Alice", "Martin", "0601020304", "a@x.com", "Paris"));
-        for (Contact c : db.getAllContacts())
-            Log.d("DB_TEST", c.getId() + " " + c.getFirstName() + " " + c.getPhone());
-
         TextView title = findViewById(R.id.titleText);
         Button addButton = findViewById(R.id.addButton);
 

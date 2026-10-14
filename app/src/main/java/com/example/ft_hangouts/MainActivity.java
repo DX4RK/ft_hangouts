@@ -1,5 +1,7 @@
 package com.example.ft_hangouts;   // keep YOUR package line
 
+import java.util.List;
+import android.widget.ArrayAdapter;
 import com.example.ft_hangouts.db.DatabaseHelper;
 import com.example.ft_hangouts.model.Contact;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -20,13 +23,18 @@ public class MainActivity extends Activity {
 
         TextView title = findViewById(R.id.titleText);
         Button addButton = findViewById(R.id.addButton);
+        ListView contactList = findViewById(R.id.contacts);
 
-        title.setText("Hello");
+        DatabaseHelper db = DatabaseHelper.getInstance(this);
+        List<Contact> contacts = db.getAllContacts();
+
+        ArrayAdapter<Contact> adapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_list_item_1, contacts);
+        contactList.setAdapter(adapter);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // open another screen
                 Intent intent = new Intent(MainActivity.this, ContactEditActivity.class);
                 startActivity(intent);
             }

@@ -1,0 +1,3 @@
+<resources>
+    <style name="Theme.Ft_hangouts" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

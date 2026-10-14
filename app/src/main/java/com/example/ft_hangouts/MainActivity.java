@@ -1,5 +1,7 @@
 package com.example.ft_hangouts;   // keep YOUR package line
 
+
+import com.example.ft_hangouts.adapter.ContactAdapter;
 import java.util.List;
 import android.widget.ArrayAdapter;
 import com.example.ft_hangouts.db.DatabaseHelper;
@@ -13,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+
 
 public class MainActivity extends Activity {
     @Override
@@ -28,9 +32,11 @@ public class MainActivity extends Activity {
         DatabaseHelper db = DatabaseHelper.getInstance(this);
         List<Contact> contacts = db.getAllContacts();
 
-        ArrayAdapter<Contact> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_list_item_1, contacts);
+        ContactAdapter adapter = new ContactAdapter(this, contacts);
         contactList.setAdapter(adapter);
+        //ArrayAdapter<Contact> adapter = new ArrayAdapter<>(
+        //        this, android.R.layout.simple_list_item_1, contacts);
+        //contactList.setAdapter(adapter);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -19,6 +19,15 @@ import android.widget.TextView;
 
 
 public class MainActivity extends Activity {
+    private ContactAdapter adapter;
+    private DatabaseHelper db;
+    private List<Contact> contacts;
+    public void refreshContacts() {
+        contacts.clear();
+        contacts.addAll(db.getAllContacts());
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,10 +38,10 @@ public class MainActivity extends Activity {
         Button addButton = findViewById(R.id.addButton);
         ListView contactList = findViewById(R.id.contacts);
 
-        DatabaseHelper db = DatabaseHelper.getInstance(this);
-        List<Contact> contacts = db.getAllContacts();
+        db = DatabaseHelper.getInstance(this);
+        contacts = db.getAllContacts();
 
-        ContactAdapter adapter = new ContactAdapter(this, contacts);
+        adapter = new ContactAdapter(this, contacts);
         contactList.setAdapter(adapter);
         //ArrayAdapter<Contact> adapter = new ArrayAdapter<>(
         //        this, android.R.layout.simple_list_item_1, contacts);
@@ -45,5 +54,13 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (db != null && contacts != null && adapter != null) {
+            refreshContacts();
+        }
     }
 }

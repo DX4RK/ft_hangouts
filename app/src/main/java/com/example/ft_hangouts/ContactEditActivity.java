@@ -1,6 +1,8 @@
 package com.example.ft_hangouts;
 
 import com.example.ft_hangouts.model.Contact;
+import com.example.ft_hangouts.db.DatabaseHelper;
+import android.widget.Toast;
 
 
 import android.app.Activity;
@@ -65,6 +67,12 @@ public class ContactEditActivity extends Activity {
         setContentView(R.layout.add_contact);
 
         Button addButton = findViewById(R.id.addContactButton);
+        EditText firstName = findViewById(R.id.firstNameInput);
+        EditText lastName = findViewById(R.id.lastNameInput);
+        EditText phone = findViewById(R.id.phoneInput);
+        EditText email = findViewById(R.id.emailInput);
+        EditText address = findViewById(R.id.addressInput);
+
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +80,27 @@ public class ContactEditActivity extends Activity {
                     return;
                 }
 
+                try {
+                    Contact contact = new Contact(
+                            firstName.getText().toString(),
+                            lastName.getText().toString(),
+                            phone.getText().toString(),
+                            email.getText().toString(),
+                            address.getText().toString()
+                    );
+                    DatabaseHelper db = DatabaseHelper.getInstance(ContactEditActivity.this);
+                    long id = db.addContact(contact);
+                    if (id != -1) {
+                        Toast.makeText(ContactEditActivity.this,
+                                "Contact added!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(ContactEditActivity.this,
+                                "Error adding contact", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.d("CONTACT_DEBUG", e.getMessage().toString());
+                }
             }
         });
     }

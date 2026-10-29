@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.ft_hangouts.model.Contact;
+import com.example.ft_hangouts.model.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper instance;
 
     private static final String DATABASE_NAME = "ContactsDB";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String TABLE_NAME = "contacts";
     private static final String ID_FIELD = "id";
@@ -24,6 +25,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String PHONE_FIELD = "phone";
     private static final String EMAIL_FIELD = "email";
     private static final String ADDRESS_FIELD = "address";
+
+    private static final String MESSAGES_TABLE = "messages";
+    private static final String MSG_ID_FIELD = "id";
+    private static final String MSG_CONTACT_ID_FIELD = "contactId";
+    private static final String MSG_BODY_FIELD = "body";
+    private static final String MSG_TIMESTAMP_FIELD = "timestamp";
+    private static final String MSG_IS_SENT_FIELD = "isSent";
 
     private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -44,10 +52,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + PHONE_FIELD + " TEXT, "
                 + EMAIL_FIELD + " TEXT, "
                 + ADDRESS_FIELD + " TEXT)");
+
+        db.execSQL("CREATE TABLE " + MESSAGES_TABLE + " ("
+                + MSG_ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + MSG_CONTACT_ID_FIELD + " INTEGER NOT NULL, "
+                + MSG_BODY_FIELD + " TEXT, "
+                + MSG_TIMESTAMP_FIELD + " INTEGER, "
+                + MSG_IS_SENT_FIELD + " INTEGER, "
+                + "FOREIGN KEY(" + MSG_CONTACT_ID_FIELD + ") REFERENCES "
+                + TABLE_NAME + "(" + ID_FIELD + ") ON DELETE CASCADE)");
+    }
+
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < 2) {
+            db.execSQL("CREATE TABLE " + MESSAGES_TABLE + " ("
+                    + MSG_ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + MSG_CONTACT_ID_FIELD + " INTEGER NOT NULL, "
+                    + MSG_BODY_FIELD + " TEXT, "
+                    + MSG_TIMESTAMP_FIELD + " INTEGER, "
+                    + MSG_IS_SENT_FIELD + " INTEGER, "
+                    + "FOREIGN KEY(" + MSG_CONTACT_ID_FIELD + ") REFERENCES "
+                    + TABLE_NAME + "(" + ID_FIELD + ") ON DELETE CASCADE)");
+        }
     }
 
     private ContentValues toValues(Contact c) {
@@ -68,6 +101,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cursor.getString(cursor.getColumnIndexOrThrow(PHONE_FIELD)),
                 cursor.getString(cursor.getColumnIndexOrThrow(EMAIL_FIELD)),
                 cursor.getString(cursor.getColumnIndexOrThrow(ADDRESS_FIELD)));
+    }
+
+    private ContentValues toValues(Message m) {
+        ContentValues values = new ContentValues();
+        values.put(MSG_CONTACT_ID_FIELD, m.getContactId());
+        values.put(MSG_BODY_FIELD, m.getBody());
+        values.put(MSG_TIMESTAMP_FIELD, m.getTimestamp());
+        values.put(MSG_IS_SENT_FIELD, m.isSent() ? 1 : 0);
+        return values;
+    }
+
+    private Message messageFromCursor(Cursor cursor) {
+        return new Message(
+                cursor.getInt(cursor.getColumnIndexOrThrow(MSG_ID_FIELD)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(MSG_CONTACT_ID_FIELD)),
+                cursor.getString(cursor.getColumnIndexOrThrow(MSG_BODY_FIELD)),
+                cursor.getLong(cursor.getColumnIndexOrThrow(MSG_TIMESTAMP_FIELD)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(MSG_IS_SENT_FIELD)) == 1);
     }
 
     public long addContact(Contact contact) {
@@ -97,6 +148,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return contact;
     }
 
+    public Contact getContactByPhone(String phone) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NAME, null, PHONE_FIELD + " = ?",
+                new String[]{phone}, null, null, null);
+        Contact contact = null;
+        if (cursor.moveToFirst())
+            contact = fromCursor(cursor);
+        cursor.close();
+        return contact;
+    }
+
     public int updateContact(Contact contact) {
         SQLiteDatabase db = getWritableDatabase();
         return db.update(TABLE_NAME, toValues(contact), ID_FIELD + " = ?",
@@ -107,5 +169,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete(TABLE_NAME, ID_FIELD + " = ?",
                 new String[]{String.valueOf(id)});
+    }
+
+    public long addMessage(Message message) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.insert(MESSAGES_TABLE, null, toValues(message));
+    }
+
+    public List<Message> getMessagesForContact(int contactId) {
+        List<Message> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(MESSAGES_TABLE, null,
+                MSG_CONTACT_ID_FIELD + " = ?",
+                new String[]{String.valueOf(contactId)},
+                null, null,
+                MSG_TIMESTAMP_FIELD + " ASC");
+        while (cursor.moveToNext())
+            list.add(messageFromCursor(cursor));
+        cursor.close();
+        return list;
     }
 }

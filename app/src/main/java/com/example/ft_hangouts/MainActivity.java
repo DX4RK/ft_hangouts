@@ -6,6 +6,7 @@ import java.util.List;
 import android.widget.ArrayAdapter;
 import com.example.ft_hangouts.db.DatabaseHelper;
 import com.example.ft_hangouts.model.Contact;
+import com.example.ft_hangouts.model.Message;
 import android.util.Log;
 
 import android.app.Activity;
@@ -22,6 +23,7 @@ public class MainActivity extends Activity {
     private ContactAdapter adapter;
     private DatabaseHelper db;
     private List<Contact> contacts;
+    private List<Message> messages;
     public void refreshContacts() {
         contacts.clear();
         contacts.addAll(db.getAllContacts());
@@ -43,6 +45,13 @@ public class MainActivity extends Activity {
 
         adapter = new ContactAdapter(this, contacts);
         contactList.setAdapter(adapter);
+
+        contactList.setOnItemClickListener((parent, view, position, id) -> {
+            Contact c = contacts.get(position);
+            Intent intent = new Intent(MainActivity.this, ConversationActivity.class);
+            intent.putExtra("contactId", c.getId());
+            startActivity(intent);
+        });
         //ArrayAdapter<Contact> adapter = new ArrayAdapter<>(
         //        this, android.R.layout.simple_list_item_1, contacts);
         //contactList.setAdapter(adapter);

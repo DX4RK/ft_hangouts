@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.example.ft_hangouts.R;
 import com.example.ft_hangouts.model.Contact;
 
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.List;
 public class ContactAdapter extends ArrayAdapter<Contact> {
 
     public ContactAdapter(Context context, List<Contact> contacts) {
-        super(context, android.R.layout.simple_list_item_2, contacts);
+        super(context, 0, contacts);
     }
 
     @Override
@@ -21,15 +23,20 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
         View row = convertView;
         if (row == null)
             row = LayoutInflater.from(getContext())
-                    .inflate(android.R.layout.simple_list_item_2, parent, false);
+                    .inflate(R.layout.item_contact, parent, false);
 
         Contact c = getItem(position);
 
-        TextView line1 = row.findViewById(android.R.id.text1);
-        TextView line2 = row.findViewById(android.R.id.text2);
+        TextView avatar = row.findViewById(R.id.avatar);
+        TextView name = row.findViewById(R.id.name);
+        TextView phone = row.findViewById(R.id.phone);
 
-        line1.setText(c.getFirstName() + " " + c.getLastName());
-        line2.setText(c.getPhone());
+        String first = c.getFirstName() == null ? "" : c.getFirstName();
+        String last = c.getLastName() == null ? "" : c.getLastName();
+
+        name.setText(first + " " + last);
+        phone.setText(c.getPhone());
+        avatar.setText(first.isEmpty() ? "?" : first.substring(0, 1).toUpperCase());
 
         return row;
     }

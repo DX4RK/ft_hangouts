@@ -3,11 +3,12 @@ package com.example.ft_hangouts;   // keep YOUR package line
 
 import com.example.ft_hangouts.adapter.ContactAdapter;
 import java.util.List;
-import android.widget.ArrayAdapter;
+
 import com.example.ft_hangouts.db.DatabaseHelper;
 import com.example.ft_hangouts.model.Contact;
 import com.example.ft_hangouts.model.Message;
-import android.util.Log;
+
+import android.widget.ImageButton;
 
 import android.Manifest;
 import android.app.Activity;
@@ -40,7 +41,7 @@ public class MainActivity extends Activity {
         android.widget.Toast.makeText(this, "NEW BUILD 123", android.widget.Toast.LENGTH_LONG).show();
 
         TextView title = findViewById(R.id.titleText);
-        Button addButton = findViewById(R.id.addButton);
+        ImageButton addButton = findViewById(R.id.addButton);
         ListView contactList = findViewById(R.id.contacts);
 
         if (Build.VERSION.SDK_INT >= 23

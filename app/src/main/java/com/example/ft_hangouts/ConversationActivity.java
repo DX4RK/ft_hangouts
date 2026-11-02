@@ -5,6 +5,7 @@ import com.example.ft_hangouts.adapter.MessageAdapter;
 import com.example.ft_hangouts.model.Contact;
 import com.example.ft_hangouts.model.Message;
 import com.example.ft_hangouts.db.DatabaseHelper;
+import com.example.ft_hangouts.receiver.SmsReceiver;
 
 import android.widget.ListView;
 import android.widget.TextView;
@@ -12,9 +13,11 @@ import android.widget.Toast;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
 import android.content.BroadcastReceiver;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -91,5 +94,26 @@ public class ConversationActivity extends Activity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (contact == null)
+            return;
+        IntentFilter filter = new IntentFilter(SmsReceiver.ACTION_NEW_MESSAGE);
+        if (Build.VERSION.SDK_INT >= 33)
+            registerReceiver(messageReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        else
+            registerReceiver(messageReceiver, filter);
+        refreshMessages();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (contact == null)
+            return;
+        unregisterReceiver(messageReceiver);
     }
 }

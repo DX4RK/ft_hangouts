@@ -1,3 +1,5 @@
 <resources>
-    <style name="Theme.Ft_hangouts" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Ft_hangouts" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">#ECF0F3</item>
+    </style>
 </resources>

@@ -10,7 +10,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.content.Context;
+import android.content.Intent;
 
+import android.content.BroadcastReceiver;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,13 +24,33 @@ import android.widget.EditText;
 import java.util.List;
 
 public class ConversationActivity extends Activity {
+    private Contact contact;
+    private List<Message> messages;
+    private MessageAdapter adapter;
+    private DatabaseHelper db;
+
+    public void refreshMessages() {
+        messages.clear();
+        messages.addAll(db.getMessagesForContact(contact.getId()));
+        adapter.notifyDataSetChanged();
+    }
+
+    private final BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshMessages();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message);
 
         int contactId = getIntent().getIntExtra("contactId", -1);
-        Contact contact = DatabaseHelper.getInstance(this).getContact(contactId);
+
+        db = DatabaseHelper.getInstance(this);
+        contact = db.getContact(contactId);
 
         if (contact == null) {
             Toast.makeText(this, "Contact not found", Toast.LENGTH_SHORT).show();
@@ -35,13 +58,13 @@ public class ConversationActivity extends Activity {
             return;
         }
 
-        List<Message> messages = DatabaseHelper.getInstance(this)
-                .getMessagesForContact(contact.getId());
-        MessageAdapter adapter = new MessageAdapter(this, messages, contact);
+        messages = db.getMessagesForContact(contact.getId());
+        adapter = new MessageAdapter(this, messages, contact);
 
         ListView messagesList = findViewById(R.id.listMessages);
         TextView contactName = findViewById(R.id.contactName);
         Button sendButton = findViewById(R.id.buttonSend);
+        Button closeButton = findViewById(R.id.closeButton);
         EditText editMessage = findViewById(R.id.editMessage);
 
         messagesList.setAdapter(adapter);
@@ -56,9 +79,16 @@ public class ConversationActivity extends Activity {
 
                 Message message = new Message(contact.getId(), text,
                         System.currentTimeMillis(), true);
-                DatabaseHelper.getInstance(ConversationActivity.this).addMessage(message);
 
+                db.addMessage(message);
                 editMessage.setText("");
+                refreshMessages();
+            }
+        });
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

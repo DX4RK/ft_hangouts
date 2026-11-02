@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 public class ContactEditActivity extends Activity {
     private boolean parseFields() {
@@ -67,11 +68,19 @@ public class ContactEditActivity extends Activity {
         setContentView(R.layout.add_contact);
 
         Button addButton = findViewById(R.id.addContact);
+        ImageButton closeButton = findViewById(R.id.closeButton);
         EditText firstName = findViewById(R.id.firstNameInput);
         EditText lastName = findViewById(R.id.lastNameInput);
         EditText phone = findViewById(R.id.phoneInput);
         EditText email = findViewById(R.id.emailInput);
         EditText address = findViewById(R.id.addressInput);
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override

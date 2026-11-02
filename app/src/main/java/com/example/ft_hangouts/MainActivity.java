@@ -9,7 +9,10 @@ import com.example.ft_hangouts.model.Contact;
 import com.example.ft_hangouts.model.Message;
 import android.util.Log;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.content.Intent;
 import android.view.View;
@@ -39,6 +42,12 @@ public class MainActivity extends Activity {
         TextView title = findViewById(R.id.titleText);
         Button addButton = findViewById(R.id.addButton);
         ListView contactList = findViewById(R.id.contacts);
+
+        if (Build.VERSION.SDK_INT >= 23
+                && checkSelfPermission(Manifest.permission.RECEIVE_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS}, 1);
+        }
 
         db = DatabaseHelper.getInstance(this);
         contacts = db.getAllContacts();

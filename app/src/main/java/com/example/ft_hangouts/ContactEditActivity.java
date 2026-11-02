@@ -66,7 +66,7 @@ public class ContactEditActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_contact);
 
-        Button addButton = findViewById(R.id.addContactButton);
+        Button addButton = findViewById(R.id.addContact);
         EditText firstName = findViewById(R.id.firstNameInput);
         EditText lastName = findViewById(R.id.lastNameInput);
         EditText phone = findViewById(R.id.phoneInput);

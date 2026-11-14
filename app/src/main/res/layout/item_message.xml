@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingTop="3dp"
+    android:paddingHorizontal="10dp"
     android:paddingBottom="3dp">
 
     <LinearLayout

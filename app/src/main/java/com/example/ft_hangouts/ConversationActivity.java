@@ -65,14 +65,25 @@ public class ConversationActivity extends Activity {
         adapter = new MessageAdapter(this, messages, contact);
 
         ListView messagesList = findViewById(R.id.listMessages);
-        TextView contactName = findViewById(R.id.contactName);
+         /* TextView contactName = findViewById(R.id.contactName); */
         Button sendButton = findViewById(R.id.buttonSend);
-        Button closeButton = findViewById(R.id.closeButton);
+        /* Button closeButton = findViewById(R.id.closeButton); */
         EditText editMessage = findViewById(R.id.editMessage);
+
+        TextView avatar = findViewById(R.id.avatar);
+        TextView name = findViewById(R.id.name);
+        TextView phone = findViewById(R.id.phone);
+
+        String first = contact.getFirstName() == null ? "" : contact.getFirstName();
+        String last = contact.getLastName() == null ? "" : contact.getLastName();
+
+        name.setText(first + " " + last);
+        phone.setText(contact.getPhone());
+        avatar.setText(first.isEmpty() ? "?" : first.substring(0, 1).toUpperCase());
 
         messagesList.setAdapter(adapter);
 
-        contactName.setText(contact.getFirstName() + " " + contact.getLastName());
+        /*contactName.setText(contact.getFirstName() + " " + contact.getLastName());*/
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,12 +99,12 @@ public class ConversationActivity extends Activity {
                 refreshMessages();
             }
         });
-        closeButton.setOnClickListener(new View.OnClickListener() {
+        /*closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
-        });
+        });*/
     }
 
     @Override

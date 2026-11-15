@@ -7,6 +7,7 @@ import com.example.ft_hangouts.model.Message;
 import com.example.ft_hangouts.db.DatabaseHelper;
 import com.example.ft_hangouts.receiver.SmsReceiver;
 
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,7 +68,7 @@ public class ConversationActivity extends Activity {
         ListView messagesList = findViewById(R.id.listMessages);
          /* TextView contactName = findViewById(R.id.contactName); */
         Button sendButton = findViewById(R.id.buttonSend);
-        /* Button closeButton = findViewById(R.id.closeButton); */
+        ImageButton closeButton = findViewById(R.id.closeButton);
         EditText editMessage = findViewById(R.id.editMessage);
 
         TextView avatar = findViewById(R.id.avatar);
@@ -99,12 +100,12 @@ public class ConversationActivity extends Activity {
                 refreshMessages();
             }
         });
-        /*closeButton.setOnClickListener(new View.OnClickListener() {
+        closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
-        });*/
+        });
     }
 
     @Override

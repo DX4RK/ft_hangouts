@@ -21,7 +21,9 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -67,7 +69,7 @@ public class ConversationActivity extends Activity {
 
         ListView messagesList = findViewById(R.id.listMessages);
          /* TextView contactName = findViewById(R.id.contactName); */
-        Button sendButton = findViewById(R.id.buttonSend);
+        ImageButton sendButton = findViewById(R.id.buttonSend);
         ImageButton closeButton = findViewById(R.id.closeButton);
         EditText editMessage = findViewById(R.id.editMessage);
 
@@ -98,6 +100,19 @@ public class ConversationActivity extends Activity {
                 db.addMessage(message);
                 editMessage.setText("");
                 refreshMessages();
+            }
+        });
+        editMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean enterPressed = event != null
+                        && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                        && event.getAction() == KeyEvent.ACTION_DOWN;
+                if (actionId == EditorInfo.IME_ACTION_SEND || enterPressed) {
+                    sendButton.performClick();
+                    return true;
+                }
+                return false;
             }
         });
         closeButton.setOnClickListener(new View.OnClickListener() {

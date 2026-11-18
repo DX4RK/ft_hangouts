@@ -2,6 +2,11 @@ package com.example.ft_hangouts;
 
 import com.example.ft_hangouts.model.Contact;
 import com.example.ft_hangouts.db.DatabaseHelper;
+import android.content.ActivityNotFoundException;
+
+import android.net.Uri;
+import android.widget.ImageView;
+import android.content.Intent;
 import android.widget.Toast;
 
 
@@ -14,6 +19,23 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 public class ContactEditActivity extends Activity {
+    private Uri selectedPhoto;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int TAKE_PHOTO_REQUEST = 2;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            selectedPhoto = data.getData();
+
+            ImageView avatar = findViewById(R.id.avatarImage);
+            avatar.setImageURI(selectedPhoto);
+        }
+    }
+
     private boolean parseFields() {
         EditText firstName = findViewById(R.id.firstNameInput);
         EditText lastName = findViewById(R.id.lastNameInput);
@@ -69,6 +91,7 @@ public class ContactEditActivity extends Activity {
 
         Button addButton = findViewById(R.id.addContact);
         ImageButton closeButton = findViewById(R.id.closeButton);
+        Button addPhoto = findViewById(R.id.addPhoto);
         EditText firstName = findViewById(R.id.firstNameInput);
         EditText lastName = findViewById(R.id.lastNameInput);
         EditText phone = findViewById(R.id.phoneInput);
@@ -79,6 +102,20 @@ public class ContactEditActivity extends Activity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        addPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                try {
+                    Log.d("TEST", "hey");
+                    startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                } catch (ActivityNotFoundException e) {
+                    Log.d("TEST", "no");
+                }
             }
         });
 

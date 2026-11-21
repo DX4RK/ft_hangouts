@@ -19,4 +19,6 @@
     <string name="error_phone_required">Phone number is required</string>
     <string name="error_phone_invalid">Invalid phone number</string>
     <string name="error_email_invalid">Invalid email address</string>
+    <string name="contact_full_name">%1$s %2$s</string>
+    <string name="avatar_placeholder">?</string>
 </resources>

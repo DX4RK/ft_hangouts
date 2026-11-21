@@ -110,7 +110,7 @@
             android:imeOptions="actionSend"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:hint="Type a message" />
+            android:hint="@string/edit_message_hint" />
 
         <ImageButton
             android:id="@+id/buttonSend"
@@ -119,7 +119,7 @@
             android:layout_marginStart="5dp"
             android:background="@drawable/text_box"
             android:src="@drawable/ic_send"
-            android:contentDescription="Send" />
+            android:contentDescription="@string/send_button_description" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,8 +1,6 @@
 package com.example.ft_hangouts.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +8,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.ft_hangouts.ContactViews;
 import com.example.ft_hangouts.R;
 import com.example.ft_hangouts.model.Contact;
 
-import java.io.File;
 import java.util.List;
 
 public class ContactAdapter extends ArrayAdapter<Contact> {
@@ -24,55 +22,35 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
-        if (row == null)
-            row = LayoutInflater.from(getContext())
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_contact, parent, false);
+            holder = new ViewHolder(convertView);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
         Contact c = getItem(position);
+        holder.name.setText(ContactViews.fullName(getContext(), c));
+        holder.phone.setText(c.getPhone());
+        ContactViews.bindAvatar(c, holder.avatarLetter, holder.avatarImage);
 
-        //TextView avatar = row.findViewById(R.id.avatar);
-        TextView avatarLetter = row.findViewById(R.id.avatar);
-        ImageView avatarImage = row.findViewById(R.id.avatarImage);
-        TextView name = row.findViewById(R.id.name);
-        TextView phone = row.findViewById(R.id.phone);
-
-        File file = new File(new File(getContext().getFilesDir(), "avatars"),
-                "contact_" + c.getId() + ".jpg");
-        Bitmap bmp = file.exists() ? loadSmall(file, 144) : null;
-
-        String first = c.getFirstName() == null ? "" : c.getFirstName();
-        String last = c.getLastName() == null ? "" : c.getLastName();
-
-        name.setText(first + " " + last);
-        phone.setText(c.getPhone());
-        //avatar.setText(first.isEmpty() ? "?" : first.substring(0, 1).toUpperCase());
-        if (bmp != null) {
-            avatarImage.setImageBitmap(bmp);
-            avatarImage.setClipToOutline(true);
-            avatarImage.setVisibility(View.VISIBLE);
-            avatarLetter.setVisibility(View.GONE);
-        } else {
-            String firstN = c.getFirstName().trim();
-            avatarLetter.setText(firstN.isEmpty() ? "?" : firstN.substring(0, 1).toUpperCase());
-            avatarLetter.setVisibility(View.VISIBLE);
-            avatarImage.setVisibility(View.GONE);
-        }
-
-        return row;
+        return convertView;
     }
 
-    private static Bitmap loadSmall(File file, int targetPx) {
-        BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(file.getAbsolutePath(), o);
+    private static final class ViewHolder {
+        final TextView avatarLetter;
+        final ImageView avatarImage;
+        final TextView name;
+        final TextView phone;
 
-        int sample = 1;
-        while (o.outWidth / (sample * 2) >= targetPx && o.outHeight / (sample * 2) >= targetPx) {
-            sample *= 2;
+        ViewHolder(View row) {
+            avatarLetter = row.findViewById(R.id.avatar);
+            avatarImage = row.findViewById(R.id.avatarImage);
+            name = row.findViewById(R.id.name);
+            phone = row.findViewById(R.id.phone);
         }
-        o.inJustDecodeBounds = false;
-        o.inSampleSize = sample;
-        return BitmapFactory.decodeFile(file.getAbsolutePath(), o);
     }
 }

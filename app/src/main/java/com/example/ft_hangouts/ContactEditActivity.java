@@ -18,6 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class ContactEditActivity extends Activity {
     private Uri selectedPhoto;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -139,6 +145,30 @@ public class ContactEditActivity extends Activity {
                     if (id != -1) {
                         Toast.makeText(ContactEditActivity.this,
                                 "Contact added!", Toast.LENGTH_SHORT).show();
+
+                        File dir = new File(getFilesDir(), "avatars");
+                        if (!dir.exists() && !dir.mkdirs()) {
+                            Log.e("AVATAR", "Could not create avatars folder");
+                            return;
+                        }
+
+                        File file = new File(dir, "contact_" + id + ".jpg");
+
+                        try (InputStream in = getContentResolver().openInputStream(selectedPhoto);
+                             OutputStream out = new FileOutputStream(file)) {
+                            if (in == null) throw new IOException("Cannot open " + selectedPhoto);
+                            byte[] buf = new byte[8192];
+                            int n;
+                            while ((n = in.read(buf)) != -1) {
+                                out.write(buf, 0, n);
+                            }
+                        } catch (IOException e) {
+                            Log.e("AVATAR", "Failed to save avatar", e);
+                        }
+
+                        Log.d("AVATAR", "Saved: " + file.getAbsolutePath()
+                                + " exists=" + file.exists()
+                                + " size=" + file.length() + " bytes");
                         finish();
                     } else {
                         Toast.makeText(ContactEditActivity.this,

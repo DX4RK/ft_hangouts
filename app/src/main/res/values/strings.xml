@@ -10,4 +10,13 @@
     <string name="add_photo">Add Photo</string>
     <string name="close_page">Close Page</string>
     <string name="contact_not_found">Contact not found</string>
+    <string name="contact_added">Contact added!</string>
+    <string name="contact_add_error">Error adding contact</string>
+    <string name="avatar_save_error">Contact saved, but the photo could not be saved</string>
+    <string name="no_image_picker">No app available to pick an image</string>
+    <string name="error_first_name_required">First name is required</string>
+    <string name="error_last_name_required">Last name is required</string>
+    <string name="error_phone_required">Phone number is required</string>
+    <string name="error_phone_invalid">Invalid phone number</string>
+    <string name="error_email_invalid">Invalid email address</string>
 </resources>

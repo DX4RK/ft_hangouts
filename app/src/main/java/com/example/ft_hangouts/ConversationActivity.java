@@ -58,7 +58,7 @@ public class ConversationActivity extends Activity {
             return;
         }
 
-        adapter = new MessageAdapter(this, messages, contact);
+        adapter = new MessageAdapter(this, messages);
         messagesList = findViewById(R.id.listMessages);
         messagesList.setAdapter(adapter);
 

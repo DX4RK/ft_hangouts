@@ -30,17 +30,31 @@
                 android:src="@drawable/ic_back"
                 android:contentDescription="@string/close_page" />
 
-            <TextView
-                android:id="@+id/avatar"
-                android:layout_marginLeft="15dp"
+            <FrameLayout
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@drawable/circle_bg"
-                android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#dcdcdc"
-                android:textSize="20sp"
-                android:fontFamily="sans-serif-medium" />
+                android:layout_marginStart="5dp">
+
+                <ImageView
+                    android:id="@+id/avatarImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circle_bg"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:id="@+id/avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circle_bg"
+                    android:backgroundTint="#dcdcdc"
+                    android:gravity="center"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-medium" />
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="0dp"

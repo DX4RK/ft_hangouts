@@ -7,6 +7,8 @@ import com.example.ft_hangouts.model.Message;
 import com.example.ft_hangouts.db.DatabaseHelper;
 import com.example.ft_hangouts.receiver.SmsReceiver;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.File;
 import java.util.List;
 
 public class ConversationActivity extends Activity {
@@ -121,6 +124,20 @@ public class ConversationActivity extends Activity {
                 finish();
             }
         });
+    }
+
+    private static Bitmap loadSmall(File file, int targetPx) {
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), o);
+
+        int sample = 1;
+        while (o.outWidth / (sample * 2) >= targetPx && o.outHeight / (sample * 2) >= targetPx) {
+            sample *= 2;
+        }
+        o.inJustDecodeBounds = false;
+        o.inSampleSize = sample;
+        return BitmapFactory.decodeFile(file.getAbsolutePath(), o);
     }
 
     @Override

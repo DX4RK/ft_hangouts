@@ -1,85 +1,70 @@
-package com.example.ft_hangouts;   // keep YOUR package line
-
-
-import com.example.ft_hangouts.adapter.ContactAdapter;
-import java.util.List;
-
-import com.example.ft_hangouts.db.DatabaseHelper;
-import com.example.ft_hangouts.model.Contact;
-import com.example.ft_hangouts.model.Message;
-
-import android.widget.ImageButton;
+package com.example.ft_hangouts;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Bundle;
 import android.content.Intent;
-import android.view.View;
-import android.widget.Button;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 
+import com.example.ft_hangouts.adapter.ContactAdapter;
+import com.example.ft_hangouts.db.DatabaseHelper;
+import com.example.ft_hangouts.model.Contact;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
+    public static final String EXTRA_CONTACT_ID = "contactId";
+    private static final int REQUEST_SMS_PERMISSION = 1;
+
+    private final List<Contact> contacts = new ArrayList<>();
     private ContactAdapter adapter;
     private DatabaseHelper db;
-    private List<Contact> contacts;
-    private List<Message> messages;
-    public void refreshContacts() {
-        contacts.clear();
-        contacts.addAll(db.getAllContacts());
-        adapter.notifyDataSetChanged();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);   // loads the XML
-        android.widget.Toast.makeText(this, "NEW BUILD 123", android.widget.Toast.LENGTH_LONG).show();
-
-        TextView title = findViewById(R.id.titleText);
-        ImageButton addButton = findViewById(R.id.addButton);
-        ListView contactList = findViewById(R.id.contacts);
-
-        if (Build.VERSION.SDK_INT >= 23
-                && checkSelfPermission(Manifest.permission.RECEIVE_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS}, 1);
-        }
+        setContentView(R.layout.activity_main);
 
         db = DatabaseHelper.getInstance(this);
-        contacts = db.getAllContacts();
-
         adapter = new ContactAdapter(this, contacts);
+
+        ListView contactList = findViewById(R.id.contacts);
         contactList.setAdapter(adapter);
+        contactList.setOnItemClickListener((parent, view, position, id) ->
+                openConversation(contacts.get(position)));
 
-        contactList.setOnItemClickListener((parent, view, position, id) -> {
-            Contact c = contacts.get(position);
-            Intent intent = new Intent(MainActivity.this, ConversationActivity.class);
-            intent.putExtra("contactId", c.getId());
-            startActivity(intent);
-        });
-        //ArrayAdapter<Contact> adapter = new ArrayAdapter<>(
-        //        this, android.R.layout.simple_list_item_1, contacts);
-        //contactList.setAdapter(adapter);
+        ImageButton addButton = findViewById(R.id.addButton);
+        addButton.setOnClickListener(v ->
+                startActivity(new Intent(this, ContactEditActivity.class)));
 
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ContactEditActivity.class);
-                startActivity(intent);
-            }
-        });
+        requestSmsPermissionIfNeeded();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (db != null && contacts != null && adapter != null) {
-            refreshContacts();
+        refreshContacts();
+    }
+
+    private void refreshContacts() {
+        contacts.clear();
+        contacts.addAll(db.getAllContacts());
+        adapter.notifyDataSetChanged();
+    }
+
+    private void openConversation(Contact contact) {
+        Intent intent = new Intent(this, ConversationActivity.class);
+        intent.putExtra(EXTRA_CONTACT_ID, contact.getId());
+        startActivity(intent);
+    }
+
+    private void requestSmsPermissionIfNeeded() {
+        if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},
+                    REQUEST_SMS_PERMISSION);
         }
     }
 }

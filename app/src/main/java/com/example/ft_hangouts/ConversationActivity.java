@@ -10,6 +10,7 @@ import com.example.ft_hangouts.receiver.SmsReceiver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,16 +77,33 @@ public class ConversationActivity extends Activity {
         ImageButton closeButton = findViewById(R.id.closeButton);
         EditText editMessage = findViewById(R.id.editMessage);
 
-        TextView avatar = findViewById(R.id.avatar);
+        TextView avatarLetter = findViewById(R.id.avatar);
+        ImageView avatarImage = findViewById(R.id.avatarImage);
+        //TextView avatar = findViewById(R.id.avatar);
         TextView name = findViewById(R.id.name);
         TextView phone = findViewById(R.id.phone);
+
+        File file = new File(new File(getFilesDir(), "avatars"),
+                "contact_" + contactId + ".jpg");
+        Bitmap bmp = file.exists() ? loadSmall(file, 144) : null;
 
         String first = contact.getFirstName() == null ? "" : contact.getFirstName();
         String last = contact.getLastName() == null ? "" : contact.getLastName();
 
         name.setText(first + " " + last);
         phone.setText(contact.getPhone());
-        avatar.setText(first.isEmpty() ? "?" : first.substring(0, 1).toUpperCase());
+        if (bmp != null) {
+            avatarImage.setImageBitmap(bmp);
+            avatarImage.setClipToOutline(true);
+            avatarImage.setVisibility(View.VISIBLE);
+            avatarLetter.setVisibility(View.GONE);
+        } else {
+            String firstN = contact.getFirstName().trim();
+            avatarLetter.setText(firstN.isEmpty() ? "?" : firstN.substring(0, 1).toUpperCase());
+            avatarLetter.setVisibility(View.VISIBLE);
+            avatarImage.setVisibility(View.GONE);
+        }
+        //avatar.setText(first.isEmpty() ? "?" : first.substring(0, 1).toUpperCase());
 
         messagesList.setAdapter(adapter);
 

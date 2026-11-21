@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="bubble_sent_text">#FFFFFF</color>
+    <color name="bubble_sent_time">#CCE0FF</color>
+    <color name="bubble_received_text">#000000</color>
+    <color name="bubble_received_time">#9CA3AF</color>
 </resources>
